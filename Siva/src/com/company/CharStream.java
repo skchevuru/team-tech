@@ -9,44 +9,38 @@ public class CharStream {
     public static void main(String args[]){
         LocalDateTime localDateTime = LocalDateTime.now();
         String input = "aabbbcccabcaaaaaccbb";
-        List<String>  findSameCharList = repeatedCharStrings(input);
-        System.out.println(findSameCharList);
-        int highest = 0;
-        int location = 0;
-        int finalLocation = 0;
-        String longestRepeated = new String();
-        for(String repeated: findSameCharList){
-            if(highest < repeated.length()){
-                highest = repeated.length();
-                longestRepeated = repeated;
-                finalLocation = location;
-            }
-            location = location + repeated.length();
-        }
-
-        System.out.println("Longest Repeated = "+longestRepeated);
-        System.out.println("Location ="+ (finalLocation+1));
+        repeatedCharStrings(input);
         System.out.println("Time Taken "+ localDateTime.until(LocalDateTime.now(), ChronoUnit.MILLIS));
     }
 
-    private static List<String> repeatedCharStrings(String input){
+
+    private static void repeatedCharStrings(String input){
         char[] charInput = input.toCharArray();
-        char character = charInput[0];
-        List<String> findSameCharList = new ArrayList<>();
         char compare = charInput[0];
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(compare);
+        int highest = 0;
+        int location = 0;
+        int finalLocation = 0;
+        String finalString = new String();
         for(int i=1; i<charInput.length; i++){
             if(compare == charInput[i]){
                 stringBuffer.append(charInput[i]);
             }else{
                 compare = charInput[i];
-                findSameCharList.add(stringBuffer.toString());
+                if(highest < stringBuffer.toString().length()){
+                    finalString = stringBuffer.toString();
+                    highest = finalString.length();
+                    finalLocation = location;
+                }
+                location = i;
                 stringBuffer = new StringBuffer();
                 stringBuffer.append(compare);
             }
         }
-        findSameCharList.add(stringBuffer.toString());
-        return findSameCharList;
+
+        System.out.println("Final String = "+finalString);
+        System.out.println("Final String Location = "+(finalLocation+1));
+
     }
 }
