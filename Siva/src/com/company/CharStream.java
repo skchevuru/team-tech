@@ -2,87 +2,62 @@ package com.company;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CharStream {
     public static void main(String args[]){
-        String input = "aabbbcccabcaaaaaccbb";
+        String input = "aabbbzzzzzcccabcaaaaaccbbxxxxx";
         LocalDateTime localDateTime = LocalDateTime.now();
+        new CharStream().repeatedCharStringChars(input);
+        System.out.println("Time Taken for char array =  "+ localDateTime.until(LocalDateTime.now(), ChronoUnit.MILLIS));
 
-        repeatedCharStringChar(input);
-        System.out.println("Time Taken for char array = "+ localDateTime.until(LocalDateTime.now(), ChronoUnit.MILLIS));
-
-        localDateTime = LocalDateTime.now();
-        repeatedCharStrings(input);
-        System.out.println("Time Taken for bufferstring =  "+ localDateTime.until(LocalDateTime.now(), ChronoUnit.MILLIS));
-    }
-
-    //Using Buffer String
-    private static void repeatedCharStrings(String input){
-        char[] charInput = input.toCharArray();
-        char compare = charInput[0];
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append(compare);
-        int highest = 0;
-        int location = 0;
-        int finalLocation = 0;
-        String finalString = new String();
-        for(int i=1; i<charInput.length; i++){
-            if(compare == charInput[i]){
-                stringBuffer.append(charInput[i]);
-            }else{
-                compare = charInput[i];
-                String previouString = stringBuffer.toString();
-                if(highest < previouString.length()){
-                    finalString = previouString;
-                    highest = finalString.length();
-                    finalLocation = location;
-                }
-                location = i;
-                stringBuffer = new StringBuffer();
-                stringBuffer.append(compare);
-            }
-        }
-
-        System.out.println("Final String = "+finalString);
-        System.out.println("Final String Location = "+(finalLocation+1));
 
     }
+
+
     //Using char array logic
-    private static void repeatedCharStringChar(String input){
+    private void repeatedCharStringChars(String input){
         char[] charInput = input.toCharArray();
         char compare = charInput[0];
         char[] stringBuffer = new char[input.length()];
-        stringBuffer[0] = compare;
         int highest = 0;
-        int location = 0;
-        int finalLocation = 0;
-        char[] finalString = new char[input.length()];;
-        int finalStringLength = 0;
-        int counter = 1;
-        for(int i=1; i<charInput.length; i++){
-            if(compare == charInput[i]){
+        List<RepeatedChar> repeatedCharList = null;
+        int started = 0;
+        int counter = 0;
+        for(int i=0; i<charInput.length; i++){
+            if(compare == charInput[i]) {
                 stringBuffer[counter] = charInput[i];
                 counter++;
+                if(i == (charInput.length - 1)){
+                    if(highest < counter){
+                        repeatedCharList = new ArrayList<>();
+                        repeatedCharList.add(new RepeatedChar(started+1, stringBuffer));
+                    }else if(highest == counter){
+                        repeatedCharList.add(new RepeatedChar(started+1, stringBuffer));
+                    }
+                }
 
             }else{
                 compare = charInput[i];
                 char[] previouString = stringBuffer;
-                finalStringLength = findLength(previouString);
-                if(highest < finalStringLength){
-                    finalString = previouString;
-                    highest = finalStringLength;
-                    finalLocation = location;
+                if(highest < counter){
+                    repeatedCharList = new ArrayList<>();
+                    repeatedCharList.add(new RepeatedChar(started+1, previouString));
+                    highest = counter;
+                }else if(highest == counter){
+                    repeatedCharList.add(new RepeatedChar(started+1, previouString));
                 }
-                location = i;
                 stringBuffer = new char[input.length()];
                 counter = 0;
+                started=i;
                 stringBuffer[counter]=compare;
+                counter++;
             }
         }
 
-        System.out.println("Final String = "+new String(finalString).trim());
-        System.out.println("Final String Location = "+(finalLocation+1));
+        System.out.println("Final String = "+repeatedCharList);
+       // System.out.println("Final String Location = "+(finalLocation+1));
 
     }
 
@@ -97,5 +72,33 @@ public class CharStream {
 
     //private static String convertString(char[] charArray)
 
+    class RepeatedChar{
+        int location;
+        char[] repeatedCharArray;
+
+        public RepeatedChar(int location, char[] repeatedCharArray){
+            this.location = location;
+            this.repeatedCharArray = repeatedCharArray;
+        }
+        public int getLocation() {
+            return location;
+        }
+
+        public void setLocation(int location) {
+            this.location = location;
+        }
+
+        public char[] getRepeatedCharArray() {
+            return repeatedCharArray;
+        }
+
+        public void setRepeatedCharArray(char[] repeatedCharArray) {
+            this.repeatedCharArray = repeatedCharArray;
+        }
+
+        public String toString(){
+            return "Char Array = " + new String(repeatedCharArray).trim() + " Location= "+ location;
+        }
+    }
 
 }
